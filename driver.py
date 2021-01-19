@@ -27,6 +27,7 @@ def main():
 def get_player_stats(df, name):
     print(f'Getting {name} Stats')
     df = df[df.Batter == name]
+    player = Hitter(name)
     at_bats = walks = strikeouts = outs = errors = singles = doubles = triples = homeruns = 0
     for i, j in df.iterrows():
         if(j['Event_Text'][0] == 'SH'):
@@ -34,48 +35,78 @@ def get_player_stats(df, name):
             print(j['Event_Text'])
        
         if(j['Event_Type'] in [2,3,18,19,20,21,22,23]):
-            at_bats += 1
+            player.add_at_bats(1)
         if(j['Event_Type'] in [2,19]):
-            outs += 1
+            player.add_outs(1)
         elif(j['Event_Type'] == 3):
-            strikeouts += 1
+            player.add_strikeouts(1)
         elif(j['Event_Type'] in [14,15,16]):
-            walks += 1
+            player.add_walks(1)
         elif(j['Event_Type'] == 18):
-            errors += 1
+            player.add_errors(1)
         elif(j['Event_Type'] == 20):
-            singles += 1
+            player.add_singles(1)
         elif(j['Event_Type'] == 21):
-            doubles += 1
+            player.add_doubles(1)
         elif(j['Event_Type'] == 22):
-            triples += 1
+            player.add_triples(1)
         elif(j['Event_Type'] == 23):
-            homeruns += 1
-    avg = (singles + doubles + triples + homeruns) / at_bats
-    slg = ((singles) + (doubles * 2) + (triples * 3) + (homeruns * 4)) / at_bats
-    obp = (singles + doubles + triples + homeruns + walks) / (at_bats + walks)
-    ops = obp + slg
-    hitter_profile = {
-        'name': name,
-        'singles': singles,
-        'doubles': doubles,
-        'triples': triples,
-        'homeruns': homeruns,
-        'walks': walks,
-        'strikeouts': strikeouts,
-        'avg': round(avg, 3),
-        'obp': round(obp, 3),
-        'slg': round(slg, 3),
-        'ops': round(ops, 3),
-        'at_bats': at_bats
-    }
-    return hitter_profile
+            player.add_homeruns(1)
+    return player
     
-def get_average(df):
-    print('Getting Average')
-    avg = 0
-    return avg
 
+class Hitter:
+    def __init__(self, player_id):
+        self.name = player_id
+        self.at_bats = self.walks = self.strikeouts = self.outs = 0
+        self.errors = self.singles = self.doubles = 0
+        self.triples = self.homeruns = 0
+    
+    def get_avg(self):
+        return round(
+            ((self.singles + self.doubles + self.triples + self.homeruns) / self.at_bats)
+            , 3)
+    
+    def get_slg(self):
+        return round((((self.singles) + (self.doubles * 2) + 
+                       (self.triples * 3) + (self.homeruns * 4)) / self.at_bats)
+                     , 3)
+    
+    def get_obp(self):
+        return round(((self.singles + self.doubles + self.triples + 
+                       self.homeruns + self.walks) / (self.at_bats + self.walks))
+                     , 3)
+    
+    def get_ops(self):
+        return self.get_obp() + self.get_slg()
+    
+    def add_at_bats(self, num):
+        self.at_bats += num
+    
+    def add_walks(self, num):
+        self.walks += num
+        
+    def add_strikeouts(self, num):
+        self.strikeouts += num
+    
+    def add_singles(self, num):
+        self.singles += num
+    
+    def add_doubles(self, num):
+        self.doubles += num
+    
+    def add_triples(self, num):
+        self.triples += num
+    
+    def add_homeruns(self, num):
+        self.homeruns += num
+        
+    def add_outs(self, num):
+        self.outs += num
+        
+    def add_errors(self, num):
+        self.errors += num
+        
 
 
 # event_action = {
