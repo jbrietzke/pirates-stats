@@ -60,17 +60,23 @@ def get_player_stats(df, name):
 
 def get_search_criteria(df):
     print('Get search Criteria')
-    get_teams(df)
-    get_innings(df)
+    constraint_team(df)
+    constraint_innings(df)
+    constraint_count(df)
+    constraint_score(df)
+    constraint_pitchers(df)
+    constraint_runners(df)
+    constraint_rbis(df)
+    constraint_events(df)
     
-def get_teams(df):
+def constraint_team(df):
     print('Get Team Search')
     # This needs to be customized
     teams = ['SLN']
     df = df[df['Vis_Team'].isin(teams)]
     return df
     
-def get_innings(df):
+def constraint_innings(df):
     print('Get innings')
     # This needs to be custmoized
     inning = 1
@@ -78,7 +84,57 @@ def get_innings(df):
     inning_end = 30
     df = df[df['Inning'] >= inning]
     return df
+
+def constraint_count(df):
+    print('Getting count')
+    balls = 0
+    strikes = 0
+    df = df[df['Balls'] == balls]
+    df = df[df['Strikes'] == strikes]
+    return df
     
+def constraint_score(df):
+    print('Score Constraint')
+    # Needs to be customized
+    vis_score = 0
+    home_score = 0
+    df = df[df['Vis_Score'] >= vis_score]
+    df = df[df['Home_Score'] >= home_score]
+    return df
+
+def constraint_pitchers(df):
+    print('Pitcher constraint')
+    # Need to customize
+    pitcher_hand = 'L'
+    pitcher = ''
+    df = df[df['Pitcher_Hand'] == pitcher_hand]
+    return df
+
+def constraint_runners(df):
+    print('Runners Constraint')
+    # Need to modify
+    first_runner = True
+    second_runner = True
+    third_runner = True
+    # Isnull works too
+    df = df[df['First_Runner'].notnull()]
+    df = df[df['Second_Runner'].notnull()]
+    df = df[df['Third_Runner'].notnull()]
+    return df
+
+def constraint_rbis(df):
+    print('Contraint rbis')
+    # Needs to be customized
+    rbis = 0
+    df = df[df['RBI'] >= rbis]
+    return df
+
+def constraint_events(df):
+    print('Constraint Event')
+    events = [20]
+    df = df[df['Event_Type'].isin(events)]
+    return df
+
 class Hitter:
     def __init__(self, player_id):
         self.name = player_id
