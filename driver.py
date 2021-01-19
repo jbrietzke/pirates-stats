@@ -6,6 +6,7 @@ This is a temporary script file.
 """
 
 import pandas as pd
+import tkinter as tk
 
 def main():
     print('Beginning Program')
@@ -24,42 +25,81 @@ def main():
     # df = df[df.Event_Type == 23]
     # df = df[df.Batter == "bellj005"]
     get_search_criteria(df)
-    get_player_stats(df, 'fraza001')
     # print('PIT Stats', df)
+    start_tkinter(df)
+  
+
+    
+def start_tkinter(df):
+    print('Starting Tkinter GUI')
+    HEIGHT = 700
+    WIDTH = 800
+    window = tk.Tk()
+    window.title("Pirates Hitting Analysis App")
+    
+    canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH)
+    canvas.pack()
+    
+    frame = tk.Frame(window, bg='yellow', bd=5)
+    frame.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.8)
+    
+    team_options = [
+        'All', 
+        'NL',
+        'AL',
+    ]
+    # Team Options Portion
+    team_options_clicked = tk.StringVar()
+    team_options_clicked.set(team_options[0])
+    team_label = tk.Label(frame, text='Vis Team')
+    team_label.place(relx=0.4, rely=0.1, relwidth=0.1)
+    team_drop = tk.OptionMenu(frame, team_options_clicked, *team_options)
+    team_drop.place(relx=0.5, rely=0.1, relwidth=0.1)
+    
+    # Innings Portion
+    
+    
+    
+    window.mainloop() 
+    
+    
+    
     
 # Sacrifice plays need to be handled
-def get_player_stats(df, name):
-    print(f'Getting {name} Stats')
-    df = df[df.Batter == name]
-    player = Hitter(name)
+def get_stats(df):
+    print('Getting Stats')
+    df = get_search_criteria(df)
+    hitter = Hitter()
     for i, j in df.iterrows():
         if(j['Event_Text'][0] == 'SH'):
             print('Sacrifice')
             print(j['Event_Text'])
        
         if(j['Event_Type'] in [2,3,18,19,20,21,22,23]):
-            player.add_at_bats(1)
+            hitter.add_at_bats(1)
         if(j['Event_Type'] in [2,19]):
-            player.add_outs(1)
+            hitter.add_outs(1)
         elif(j['Event_Type'] == 3):
-            player.add_strikeouts(1)
+            hitter.add_strikeouts(1)
         elif(j['Event_Type'] in [14,15,16]):
-            player.add_walks(1)
+            hitter.add_walks(1)
         elif(j['Event_Type'] == 18):
-            player.add_errors(1)
+            hitter.add_errors(1)
         elif(j['Event_Type'] == 20):
-            player.add_singles(1)
+            hitter.add_singles(1)
         elif(j['Event_Type'] == 21):
-            player.add_doubles(1)
+            hitter.add_doubles(1)
         elif(j['Event_Type'] == 22):
-            player.add_triples(1)
+            hitter.add_triples(1)
         elif(j['Event_Type'] == 23):
-            player.add_homeruns(1)
-    return player
+            hitter.add_homeruns(1)
+    return hitter
     
+
 
 def get_search_criteria(df):
     print('Get search Criteria')
+    constraint_players(df)
     constraint_team(df)
     constraint_innings(df)
     constraint_count(df)
@@ -68,7 +108,14 @@ def get_search_criteria(df):
     constraint_runners(df)
     constraint_rbis(df)
     constraint_events(df)
-    
+  
+def constraint_players(df):
+    print('Player constraint')
+    # Needs to customize
+    names = ['fraza001']
+    df = df[df.Batter.isin(names)]    
+    return df
+  
 def constraint_team(df):
     print('Get Team Search')
     # This needs to be customized
@@ -136,7 +183,7 @@ def constraint_events(df):
     return df
 
 class Hitter:
-    def __init__(self, player_id):
+    def __init__(self, player_id='John Doe'):
         self.name = player_id
         self.at_bats = self.walks = self.strikeouts = self.outs = 0
         self.errors = self.singles = self.doubles = 0
