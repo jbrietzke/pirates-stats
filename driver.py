@@ -10,17 +10,21 @@ import pandas as pd
 def main():
     print('Beginning Program')
     pirates_csv = './bevent.csv'
-    pirates_hitter = './pirates_hitters.csv'
+    # pirates_hitter = './pirates_hitters.csv'
     # Read in Data to DF
     df = pd.read_csv(pirates_csv)
     # print(df)
     # Dropping Vis team hitting stats
     df = df[df.Batting == 1]
-    # print(df)
+    # df1 = df.Vis_Score - df.Home_Score > 0
+    # df2 = df[df['Vis_Score'] - df['Home_Score'] > 0]
+    # print(df2)
+    # # print(df)
     # df.to_csv(pirates_hitter)
     # df = df[df.Event_Type == 23]
     # df = df[df.Batter == "bellj005"]
-    print(get_player_stats(df, 'fraza001'))
+    get_search_criteria(df)
+    get_player_stats(df, 'fraza001')
     # print('PIT Stats', df)
     
 # Sacrifice plays need to be handled
@@ -28,7 +32,6 @@ def get_player_stats(df, name):
     print(f'Getting {name} Stats')
     df = df[df.Batter == name]
     player = Hitter(name)
-    at_bats = walks = strikeouts = outs = errors = singles = doubles = triples = homeruns = 0
     for i, j in df.iterrows():
         if(j['Event_Text'][0] == 'SH'):
             print('Sacrifice')
@@ -55,6 +58,27 @@ def get_player_stats(df, name):
     return player
     
 
+def get_search_criteria(df):
+    print('Get search Criteria')
+    get_teams(df)
+    get_innings(df)
+    
+def get_teams(df):
+    print('Get Team Search')
+    # This needs to be customized
+    teams = ['SLN']
+    df = df[df['Vis_Team'].isin(teams)]
+    return df
+    
+def get_innings(df):
+    print('Get innings')
+    # This needs to be custmoized
+    inning = 1
+    inning_begin = 1
+    inning_end = 30
+    df = df[df['Inning'] >= inning]
+    return df
+    
 class Hitter:
     def __init__(self, player_id):
         self.name = player_id
