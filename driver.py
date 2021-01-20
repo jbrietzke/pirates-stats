@@ -41,7 +41,9 @@ def start_tkinter(df):
         print('Analyzing')
         query_options = {
             'vis_teams': vis_team_options_clicked.get(),
-            'player': player_options_clicked.get()
+            'player': player_options_clicked.get(),
+            'start_inning': start_innings_clicked.get(),
+            'end_inning': end_innings_clicked.get()
         }
         cleaned_df = get_search_criteria(df, query_options)
         print(cleaned_df)
@@ -78,6 +80,29 @@ def start_tkinter(df):
     
     
     # Innings Portion
+    max_innings = df['Inning'].max()
+    innings_options = list(range(1,max_innings+1))
+    
+    start_innings_clicked = tk.IntVar()
+    end_innings_clicked = tk.IntVar()
+    start_innings_clicked.set(innings_options[0])
+    end_innings_clicked.set(innings_options[-1])
+    
+    start_inning_label = tk.Label(frame, text='Start Inning')
+    start_inning_label.place(relx=0.4, rely=0.3, relwidth=0.1)
+    start_inning_drop = tk.OptionMenu(frame, start_innings_clicked, *innings_options)
+    start_inning_drop.place(relx=0.5, rely=0.3, relwidth=0.1)
+    
+    end_inning_label = tk.Label(frame, text='end Inning')
+    end_inning_label.place(relx=0.6, rely=0.3, relwidth=0.1)
+    end_inning_drop = tk.OptionMenu(frame, end_innings_clicked, *innings_options)
+    end_inning_drop.place(relx=0.7, rely=0.3, relwidth=0.1)
+
+    
+
+
+    
+    # Submit Button to create Dataframe Analysis
     submit_button = tk.Button(frame, text='Analyze', command=analyze)
     submit_button.place(relx=0.5, rely=0.9)
 
@@ -119,11 +144,11 @@ def get_stats(df):
     
 
 
-def get_search_criteria(df, query_options):
+def get_search_criteria(df, options):
     print('Get search Criteria')
-    df = constraint_players(df, query_options['player'])
-    df = constraint_team(df, query_options['vis_teams'])
-    # df = constraint_innings(df, query_options)
+    df = constraint_players(df, options['player'])
+    df = constraint_team(df, options['vis_teams'])
+    df = constraint_innings(df, options['start_inning'], options['end_inning'])
     # df = constraint_count(df, query_options)
     # df = constraint_score(df, query_options)
     # df = constraint_pitchers(df, query_options)
@@ -147,16 +172,13 @@ def constraint_team(df, vis_teams):
     if(vis_teams == 'ALL'):
         pass
     else:
-        df = df[df['Vis_Team'].isin(teams)]
+        df = df[df['Vis_Team'].isin(vis_teams)]
     return df
     
-def constraint_innings(df, query_options):
+def constraint_innings(df, start, end):
     print('Get innings')
     # This needs to be custmoized
-    inning = 1
-    inning_begin = 1
-    inning_end = 30
-    df = df[df['Inning'] >= inning]
+    df = df[(df['Inning'] >= start) & (df['Inning'] <= end)]
     return df
 
 def constraint_count(df, query_options):
