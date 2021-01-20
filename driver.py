@@ -49,7 +49,10 @@ def start_tkinter(df):
             'margin': margin.get(),
             'choice': choice.get(),
             'pitcher': pitcher.get(),
-            'hand': hand.get()
+            'hand': hand.get(),
+            'first': first.get(),
+            'second': second.get(),
+            'third': third.get()
         }
         cleaned_df = get_search_criteria(df, query_options)
         print(cleaned_df)
@@ -160,7 +163,7 @@ def start_tkinter(df):
     def create_pitcher_menu():
         pitcher_options = df['Pitcher'].unique().tolist()
         pitcher_options.sort()
-        pitcher_options.append('ALL')
+        pitcher_options.append('ANY')
         hand_options = ['ANY', 'R', 'L']
         
         pitcher_options_clicked = tk.StringVar()
@@ -183,6 +186,36 @@ def start_tkinter(df):
        
         return pitcher_options_clicked, hand_options_clicked
     pitcher, hand = create_pitcher_menu()
+    
+    # Runners portion
+    def create_runner_menu():
+        runner_options = ['ANY', 'On', 'Off']
+        
+        first_runner_clicked = tk.StringVar()
+        second_runner_clicked = tk.StringVar()
+        third_runner_clicked = tk.StringVar()
+        
+        first_runner_clicked.set(runner_options[0])
+        second_runner_clicked.set(runner_options[0])
+        third_runner_clicked.set(runner_options[0])
+        
+        first_runner_label = tk.Label(frame, text='Runner 1st')
+        first_runner_label.place(relx=0.4, rely=0.7, relwidth=0.1)
+        second_runner_label = tk.Label(frame, text='Runner 2nd')
+        second_runner_label.place(relx=0.6, rely=0.7, relwidth=0.1)
+        third_runner_label = tk.Label(frame, text='Runner 3rd')
+        third_runner_label.place(relx=0.8, rely=0.7, relwidth=0.1)
+        
+        
+        first_drop = tk.OptionMenu(frame, first_runner_clicked, *runner_options)
+        first_drop.place(relx=0.5, rely=0.7, relwidth=0.1)
+        second_drop = tk.OptionMenu(frame, second_runner_clicked, *runner_options)
+        second_drop.place(relx=0.7, rely=0.7, relwidth=0.1)
+        third_drop = tk.OptionMenu(frame, third_runner_clicked, *runner_options)
+        third_drop.place(relx=0.9, rely=0.7, relwidth=0.1)
+       
+        return first_runner_clicked, second_runner_clicked, third_runner_clicked
+    first, second, third = create_runner_menu()
     # Submit Button to create Dataframe Analysis
     submit_button = tk.Button(frame, text='Analyze', command=analyze)
     submit_button.place(relx=0.5, rely=0.9)
@@ -233,7 +266,7 @@ def get_search_criteria(df, options):
     df = constraint_count(df, options['balls'], options['strikes'])
     df = constraint_score(df, options['margin'], options['choice'])
     df = constraint_pitchers(df, options['pitcher'], options['hand'])
-    # df = constraint_runners(df, query_options)
+    df = constraint_runners(df, options['first'], options['second'], options['third'])
     # df = constraint_rbis(df, query_options)
     # df = constraint_events(df, query_options)
     return df
@@ -294,24 +327,37 @@ def constraint_pitchers(df, pitcher, hand):
     # Need to customize
     if(pitcher == 'ANY'):
         if(hand == 'ANY'):
+            print("This is being hit")
             pass
         else:
             df = df[df['Pitcher_Hand'] == hand]
     else:
         df = df[df['Pitcher'] == pitcher]
-    
     return df
 
-def constraint_runners(df, query_options):
+def constraint_runners(df, first, second, third):
     print('Runners Constraint')
-    # Need to modify
-    first_runner = True
-    second_runner = True
-    third_runner = True
-    # Isnull works too
-    df = df[df['First_Runner'].notnull()]
-    df = df[df['Second_Runner'].notnull()]
-    df = df[df['Third_Runner'].notnull()]
+    if(first == 'ANY'):
+        pass
+    elif(first == 'On'):
+        df = df[df['First_Runner'].notnull()]
+    elif(first == 'Off'):
+        df = df[df['First_Runner'].isnull()]
+    
+    if(second == 'ANY'):
+        pass
+    elif(second == 'On'):
+        df = df[df['Second_Runner'].notnull()]
+    elif(second == 'Off'):
+        df = df[df['Second_Runner'].isnull()]
+        
+    if(third == 'ANY'):
+        pass
+    elif(third == 'On'):
+        df = df[df['Third_Runner'].notnull()]
+    elif(first == 'Off'):
+        df = df[df['Third_Runner'].isnull()]
+    
     return df
 
 def constraint_rbis(df, query_options):
