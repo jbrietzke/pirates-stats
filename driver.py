@@ -38,7 +38,7 @@ def start_tkinter(df):
     PIRATE_BLACK = '#27251F'
     window = tk.Tk()
     window.title("Pirates Hitting Analysis App")
-    
+    QUERIES = []
     def analyze():
         print('Analyzing')
         query_options = {
@@ -54,25 +54,30 @@ def start_tkinter(df):
             'hand': hand.get(),
             'first': first.get(),
             'second': second.get(),
-            'third': third.get(),
+                'third': third.get(),
             'rbis': rbis.get(),
             'rbi_choice': rbi_choice.get(),
             'event': event.get()
         }
         stats_df = get_search_criteria(df, query_options)
-        stats = get_stats(stats_df).get_stats()
+        QUERIES.append(get_stats(stats_df).get_stats())
         newWindow = tk.Toplevel(window)
         newWindow.title = f'{player.get()} Analysis'
         newWindow.geometry('400x300')
         profile_frame = tk.Frame(newWindow, bg=PIRATE_BLACK)
         profile_frame.place(relheight=1, relwidth=1)
-        counter = 0
-        print(len(stats.items()))
-        for key, value in stats.items():
-            print(key, value)
-            tk.Label(profile_frame, text=f'{key}: ', anchor='w').place(relx=0.0, rely=(counter*1/13), relwidth=0.2)
-            tk.Label(profile_frame, text=f'{value}', anchor='w').place(relx=0.2, rely=(counter*1/13), relwidth=0.2)
-            counter += 1
+        q_counter = 0
+        num_stats = len(QUERIES[0].items()) + 1
+        num_queries = len(QUERIES) + 1
+        for stats in QUERIES:
+            s_counter = 0
+            for key, value in stats.items():
+                if(q_counter == 0):
+                    tk.Label(profile_frame, text=f'{key}: ', anchor='w').place(relx=(0.0), rely=(s_counter/num_stats), relwidth=0.2)
+                
+                tk.Label(profile_frame, text=f'{value}', anchor='w').place(relx=(0.2 + (q_counter*0.7/num_queries)), rely=(s_counter/num_stats), relwidth=0.7/num_queries)
+                s_counter += 1
+            q_counter += 1
             
         
     
