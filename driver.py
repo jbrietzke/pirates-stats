@@ -59,8 +59,14 @@ def start_tkinter(df):
             'rbi_choice': rbi_choice.get(),
             'event': event.get()
         }
-        cleaned_df = get_search_criteria(df, query_options)
-        print(cleaned_df)
+        stats_df = get_search_criteria(df, query_options)
+        hitting_profile = get_stats(stats_df)
+        newWindow = tk.Toplevel(window)
+        newWindow.title = f'{player.get()} Analysis'
+        newWindow.geometry('400x300')
+        profile_frame = tk.Frame(newWindow, bg=PIRATE_BLACK)
+        profile_frame.place(relheight=1, relwidth=1)
+        tk.Label(profile_frame, text=hitting_profile.get_stats()).pack()
         
     
     canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH, bg=PIRATE_GOLD)
@@ -275,7 +281,7 @@ def start_tkinter(df):
 # Sacrifice plays need to be handled
 def get_stats(df):
     print('Getting Stats')
-    df = get_search_criteria(df)
+    # df = get_search_criteria(df)
     hitter = Hitter()
     for i, j in df.iterrows():
         if(j['Event_Text'][0] == 'SH'):
@@ -464,6 +470,22 @@ class Hitter:
     
     def get_ops(self):
         return self.get_obp() + self.get_slg()
+    
+    def get_stats(self):
+        return {
+            'at_bats': self.at_bats,
+            'walks': self.walks,
+            'strikeouts': self.strikeouts,
+            'outs': self.outs,
+            'singles': self.singles,
+            'doubles': self.doubles,
+            'triples': self.triples,
+            'homeruns': self.homeruns,
+            'avg': self.get_avg(),
+            'obp': self.get_obp(),
+            'slg': self.get_slg(),
+            'ops': self.get_ops()
+        }
     
     def add_at_bats(self, num):
         self.at_bats += num
