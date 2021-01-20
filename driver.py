@@ -34,6 +34,8 @@ def start_tkinter(df):
     print('Starting Tkinter GUI')
     HEIGHT = 700
     WIDTH = 800
+    PIRATE_GOLD = "#FDB827"
+    PIRATE_BLACK = '#27251F'
     window = tk.Tk()
     window.title("Pirates Hitting Analysis App")
     
@@ -61,24 +63,24 @@ def start_tkinter(df):
         print(cleaned_df)
         
     
-    canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH)
+    canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH, bg=PIRATE_GOLD)
     canvas.pack()
     
-    frame = tk.Frame(window, bg='yellow', bd=5)
-    frame.place(relx=0.1, rely=0.1, relwidth=0.8, relheight=0.8)
+    frame = tk.Frame(window, bg=PIRATE_BLACK, bd=5)
+    frame.place(relx=0.5, rely=0.5, relwidth=0.9, relheight=0.9, anchor='c')
     
    
     # Team Options Portion
     def create_team_menu():
         team_options = df['Vis_Team'].unique().tolist()
         team_options.sort()
-        team_options.append('ALL')
+        team_options.append('ANY')
         vis_team_options_clicked = tk.StringVar()
         vis_team_options_clicked.set(team_options[-1])
-        team_label = tk.Label(frame, text='Vis Team')
-        team_label.place(relx=0.4, rely=0.1, relwidth=0.1)
+        team_label = tk.Label(frame, text='Vis Team', bg=PIRATE_GOLD)
+        team_label.place(relx=0.1, rely=0.1, relwidth=0.1)
         team_drop = tk.OptionMenu(frame, vis_team_options_clicked, *team_options)
-        team_drop.place(relx=0.5, rely=0.1, relwidth=0.1)
+        team_drop.place(relx=0.2, rely=0.1, relwidth=0.1)
         return vis_team_options_clicked
     vis_team = create_team_menu()
    
@@ -86,13 +88,13 @@ def start_tkinter(df):
     def create_player_menu():
         player_options = df['Batter'].unique().tolist()
         player_options.sort()
-        player_options.append('ALL')
+        player_options.append('ANY')
         player_options_clicked = tk.StringVar()
         player_options_clicked.set(player_options[-1])
-        team_label = tk.Label(frame, text='Player')
-        team_label.place(relx=0.4, rely=0.2, relwidth=0.1)
+        team_label = tk.Label(frame, text='Player', bg=PIRATE_GOLD)
+        team_label.place(relx=0.1, rely=0.2, relwidth=0.1)
         player_drop = tk.OptionMenu(frame, player_options_clicked, *player_options)
-        player_drop.place(relx=0.5, rely=0.2, relwidth=0.1)
+        player_drop.place(relx=0.2, rely=0.2, relwidth=0.1)
         return player_options_clicked
     player = create_player_menu()
     
@@ -106,15 +108,15 @@ def start_tkinter(df):
         start_innings_clicked.set(innings_options[0])
         end_innings_clicked.set(innings_options[-1])
         
-        start_inning_label = tk.Label(frame, text='Start Inning')
-        start_inning_label.place(relx=0.4, rely=0.3, relwidth=0.1)
+        start_inning_label = tk.Label(frame, text='Start Inning', bg=PIRATE_GOLD)
+        start_inning_label.place(relx=0.1, rely=0.3, relwidth=0.1)
         start_inning_drop = tk.OptionMenu(frame, start_innings_clicked, *innings_options)
-        start_inning_drop.place(relx=0.5, rely=0.3, relwidth=0.1)
+        start_inning_drop.place(relx=0.2, rely=0.3, relwidth=0.1)
         
-        end_inning_label = tk.Label(frame, text='end Inning')
-        end_inning_label.place(relx=0.6, rely=0.3, relwidth=0.1)
+        end_inning_label = tk.Label(frame, text='End Inning', bg=PIRATE_GOLD)
+        end_inning_label.place(relx=0.3, rely=0.3, relwidth=0.1)
         end_inning_drop = tk.OptionMenu(frame, end_innings_clicked, *innings_options)
-        end_inning_drop.place(relx=0.7, rely=0.3, relwidth=0.1)
+        end_inning_drop.place(relx=0.4, rely=0.3, relwidth=0.1)
         
         return start_innings_clicked, end_innings_clicked
     start, end = create_inning_menu()
@@ -128,15 +130,15 @@ def start_tkinter(df):
         balls_clicked.set(ball_options[0])
         strikes_clicked.set(strike_options[0])
     
-        balls_label = tk.Label(frame, text='Balls')
-        balls_label.place(relx=0.4, rely=0.4, relwidth=0.1)
+        balls_label = tk.Label(frame, text='Balls', bg=PIRATE_GOLD)
+        balls_label.place(relx=0.1, rely=0.4, relwidth=0.1)
         balls_drop = tk.OptionMenu(frame, balls_clicked, *ball_options)
-        balls_drop.place(relx=0.5, rely=0.4, relwidth=0.1)
+        balls_drop.place(relx=0.2, rely=0.4, relwidth=0.1)
         
-        strikes_label = tk.Label(frame, text='Strikes')
-        strikes_label.place(relx=0.6, rely=0.4, relwidth=0.1)
+        strikes_label = tk.Label(frame, text='Strikes', bg=PIRATE_GOLD)
+        strikes_label.place(relx=0.3, rely=0.4, relwidth=0.1)
         strikes_drop = tk.OptionMenu(frame, strikes_clicked, *strike_options)
-        strikes_drop.place(relx=0.7, rely=0.4, relwidth=0.1)
+        strikes_drop.place(relx=0.4, rely=0.4, relwidth=0.1)
         
         return balls_clicked, strikes_clicked
     balls, strikes = create_count_menu()
@@ -150,15 +152,15 @@ def start_tkinter(df):
         margin_clicked.set(margin_options[0])
         choice_clicked.set(choice_options[0])
     
-        margin_label = tk.Label(frame, text='Margin')
-        margin_label.place(relx=0.4, rely=0.5, relwidth=0.1)
+        margin_label = tk.Label(frame, text='Margin', bg=PIRATE_GOLD)
+        margin_label.place(relx=0.1, rely=0.5, relwidth=0.1)
         margin_drop = tk.OptionMenu(frame, margin_clicked, *margin_options)
-        margin_drop.place(relx=0.5, rely=0.5, relwidth=0.1)
+        margin_drop.place(relx=0.2, rely=0.5, relwidth=0.1)
         
-        choice_label = tk.Label(frame, text='Choice')
-        choice_label.place(relx=0.6, rely=0.5, relwidth=0.1)
+        choice_label = tk.Label(frame, text='Choice', bg=PIRATE_GOLD)
+        choice_label.place(relx=0.3, rely=0.5, relwidth=0.1)
         choice_drop = tk.OptionMenu(frame, choice_clicked, *choice_options)
-        choice_drop.place(relx=0.7, rely=0.5, relwidth=0.1)
+        choice_drop.place(relx=0.4, rely=0.5, relwidth=0.1)
         
         return margin_clicked, choice_clicked
     margin, choice = create_margin_menu()
@@ -176,17 +178,17 @@ def start_tkinter(df):
         pitcher_options_clicked.set(pitcher_options[-1])
         hand_options_clicked.set(hand_options[0])
         
-        pitcher_label = tk.Label(frame, text='Pitcher')
-        pitcher_label.place(relx=0.4, rely=0.6, relwidth=0.1)
-        hand_label = tk.Label(frame, text='Hand')
-        hand_label.place(relx=0.6, rely=0.6, relwidth=0.1)
+        pitcher_label = tk.Label(frame, text='Pitcher', bg=PIRATE_GOLD)
+        pitcher_label.place(relx=0.1, rely=0.6, relwidth=0.1)
+        hand_label = tk.Label(frame, text='Hand', bg=PIRATE_GOLD)
+        hand_label.place(relx=0.3, rely=0.6, relwidth=0.1)
         
         
         
         pitcher_drop = tk.OptionMenu(frame, pitcher_options_clicked, *pitcher_options)
-        pitcher_drop.place(relx=0.5, rely=0.6, relwidth=0.1)
+        pitcher_drop.place(relx=0.2, rely=0.6, relwidth=0.1)
         hand_drop = tk.OptionMenu(frame, hand_options_clicked, *hand_options)
-        hand_drop.place(relx=0.7, rely=0.6, relwidth=0.1)
+        hand_drop.place(relx=0.4, rely=0.6, relwidth=0.1)
        
         return pitcher_options_clicked, hand_options_clicked
     pitcher, hand = create_pitcher_menu()
@@ -203,20 +205,20 @@ def start_tkinter(df):
         second_runner_clicked.set(runner_options[0])
         third_runner_clicked.set(runner_options[0])
         
-        first_runner_label = tk.Label(frame, text='Runner 1st')
-        first_runner_label.place(relx=0.4, rely=0.7, relwidth=0.1)
-        second_runner_label = tk.Label(frame, text='Runner 2nd')
-        second_runner_label.place(relx=0.6, rely=0.7, relwidth=0.1)
-        third_runner_label = tk.Label(frame, text='Runner 3rd')
-        third_runner_label.place(relx=0.8, rely=0.7, relwidth=0.1)
+        first_runner_label = tk.Label(frame, text='Runner 1st', bg=PIRATE_GOLD)
+        first_runner_label.place(relx=0.1, rely=0.7, relwidth=0.1)
+        second_runner_label = tk.Label(frame, text='Runner 2nd', bg=PIRATE_GOLD)
+        second_runner_label.place(relx=0.3, rely=0.7, relwidth=0.1)
+        third_runner_label = tk.Label(frame, text='Runner 3rd', bg=PIRATE_GOLD)
+        third_runner_label.place(relx=0.5, rely=0.7, relwidth=0.1)
         
         
         first_drop = tk.OptionMenu(frame, first_runner_clicked, *runner_options)
-        first_drop.place(relx=0.5, rely=0.7, relwidth=0.1)
+        first_drop.place(relx=0.2, rely=0.7, relwidth=0.1)
         second_drop = tk.OptionMenu(frame, second_runner_clicked, *runner_options)
-        second_drop.place(relx=0.7, rely=0.7, relwidth=0.1)
+        second_drop.place(relx=0.4, rely=0.7, relwidth=0.1)
         third_drop = tk.OptionMenu(frame, third_runner_clicked, *runner_options)
-        third_drop.place(relx=0.9, rely=0.7, relwidth=0.1)
+        third_drop.place(relx=0.6, rely=0.7, relwidth=0.1)
        
         return first_runner_clicked, second_runner_clicked, third_runner_clicked
     first, second, third = create_runner_menu()
@@ -230,15 +232,15 @@ def start_tkinter(df):
         margin_clicked.set(margin_options[0])
         choice_clicked.set(choice_options[0])
     
-        margin_label = tk.Label(frame, text='RBIs')
-        margin_label.place(relx=0.4, rely=0.8, relwidth=0.1)
+        margin_label = tk.Label(frame, text='RBIs', bg=PIRATE_GOLD)
+        margin_label.place(relx=0.1, rely=0.8, relwidth=0.1)
         margin_drop = tk.OptionMenu(frame, margin_clicked, *margin_options)
-        margin_drop.place(relx=0.5, rely=0.8, relwidth=0.1)
+        margin_drop.place(relx=0.2, rely=0.8, relwidth=0.1)
         
-        choice_label = tk.Label(frame, text='Choice')
-        choice_label.place(relx=0.6, rely=0.8, relwidth=0.1)
+        choice_label = tk.Label(frame, text='Choice', bg=PIRATE_GOLD)
+        choice_label.place(relx=0.3, rely=0.8, relwidth=0.1)
         choice_drop = tk.OptionMenu(frame, choice_clicked, *choice_options)
-        choice_drop.place(relx=0.7, rely=0.8, relwidth=0.1)
+        choice_drop.place(relx=0.4, rely=0.8, relwidth=0.1)
         
         return margin_clicked, choice_clicked
     rbis, rbi_choice = create_rbi_menu()
@@ -253,16 +255,16 @@ def start_tkinter(df):
         event_options.append('ALL')
         event_options_clicked = tk.StringVar()
         event_options_clicked.set(event_options[0])
-        event_label = tk.Label(frame, text='Event')
-        event_label.place(relx=0.4, rely=0.9, relwidth=0.1)
+        event_label = tk.Label(frame, text='Event', bg=PIRATE_GOLD)
+        event_label.place(relx=0.1, rely=0.9, relwidth=0.1)
         event_drop = tk.OptionMenu(frame, event_options_clicked, *event_options)
-        event_drop.place(relx=0.5, rely=0.9, relwidth=0.1)
+        event_drop.place(relx=0.2, rely=0.9, relwidth=0.1)
         return event_options_clicked
     event = create_event_menu()
     
     # Submit Button to create Dataframe Analysis
-    submit_button = tk.Button(frame, text='Analyze', command=analyze)
-    submit_button.place(relx=0.5, rely=0)
+    submit_button = tk.Button(frame, text='Analyze', command=analyze, bg='blue')
+    submit_button.place(relx=0.2, rely=0)
 
     
     window.mainloop() 
@@ -318,7 +320,7 @@ def get_search_criteria(df, options):
 def constraint_players(df, player):
     print('Player constraint')
     # Needs to customize
-    if(player == 'ALL'):
+    if(player == 'ANY'):
         pass
     else:
         df = df[df.Batter == player]    
@@ -327,7 +329,7 @@ def constraint_players(df, player):
 def constraint_team(df, vis_teams):
     print('Get Team Search')
     # This needs to be customized
-    if(vis_teams == 'ALL'):
+    if(vis_teams == 'ANY'):
         pass
     else:
         df = df[df['Vis_Team'].isin(vis_teams)]
