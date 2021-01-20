@@ -52,7 +52,10 @@ def start_tkinter(df):
             'hand': hand.get(),
             'first': first.get(),
             'second': second.get(),
-            'third': third.get()
+            'third': third.get(),
+            'rbis': rbis.get(),
+            'rbi_choice': rbi_choice.get(),
+            'event': event.get()
         }
         cleaned_df = get_search_criteria(df, query_options)
         print(cleaned_df)
@@ -78,6 +81,7 @@ def start_tkinter(df):
         team_drop.place(relx=0.5, rely=0.1, relwidth=0.1)
         return vis_team_options_clicked
     vis_team = create_team_menu()
+   
     # Player Names Portion
     def create_player_menu():
         player_options = df['Batter'].unique().tolist()
@@ -129,7 +133,7 @@ def start_tkinter(df):
         balls_drop = tk.OptionMenu(frame, balls_clicked, *ball_options)
         balls_drop.place(relx=0.5, rely=0.4, relwidth=0.1)
         
-        strikes_label = tk.Label(frame, text='strikes')
+        strikes_label = tk.Label(frame, text='Strikes')
         strikes_label.place(relx=0.6, rely=0.4, relwidth=0.1)
         strikes_drop = tk.OptionMenu(frame, strikes_clicked, *strike_options)
         strikes_drop.place(relx=0.7, rely=0.4, relwidth=0.1)
@@ -216,9 +220,49 @@ def start_tkinter(df):
        
         return first_runner_clicked, second_runner_clicked, third_runner_clicked
     first, second, third = create_runner_menu()
+    
+    # RBI portion
+    def create_rbi_menu():
+        margin_options = list(range(-1, 5))
+        choice_options = ['ANY', 'Less', 'Greater']
+        margin_clicked = tk.IntVar()
+        choice_clicked = tk.StringVar()
+        margin_clicked.set(margin_options[0])
+        choice_clicked.set(choice_options[0])
+    
+        margin_label = tk.Label(frame, text='RBIs')
+        margin_label.place(relx=0.4, rely=0.8, relwidth=0.1)
+        margin_drop = tk.OptionMenu(frame, margin_clicked, *margin_options)
+        margin_drop.place(relx=0.5, rely=0.8, relwidth=0.1)
+        
+        choice_label = tk.Label(frame, text='Choice')
+        choice_label.place(relx=0.6, rely=0.8, relwidth=0.1)
+        choice_drop = tk.OptionMenu(frame, choice_clicked, *choice_options)
+        choice_drop.place(relx=0.7, rely=0.8, relwidth=0.1)
+        
+        return margin_clicked, choice_clicked
+    rbis, rbi_choice = create_rbi_menu()
+    
+    # Event Types Portion
+    def create_event_menu():
+        event_options = [
+            'ANY', 'Strikeout', 'Walk', 'Single',
+            'Double', 'Triple', 'Homerun'
+        ]
+        event_options.sort()
+        event_options.append('ALL')
+        event_options_clicked = tk.StringVar()
+        event_options_clicked.set(event_options[0])
+        event_label = tk.Label(frame, text='Event')
+        event_label.place(relx=0.4, rely=0.9, relwidth=0.1)
+        event_drop = tk.OptionMenu(frame, event_options_clicked, *event_options)
+        event_drop.place(relx=0.5, rely=0.9, relwidth=0.1)
+        return event_options_clicked
+    event = create_event_menu()
+    
     # Submit Button to create Dataframe Analysis
     submit_button = tk.Button(frame, text='Analyze', command=analyze)
-    submit_button.place(relx=0.5, rely=0.9)
+    submit_button.place(relx=0.5, rely=0)
 
     
     window.mainloop() 
@@ -267,8 +311,8 @@ def get_search_criteria(df, options):
     df = constraint_score(df, options['margin'], options['choice'])
     df = constraint_pitchers(df, options['pitcher'], options['hand'])
     df = constraint_runners(df, options['first'], options['second'], options['third'])
-    # df = constraint_rbis(df, query_options)
-    # df = constraint_events(df, query_options)
+    df = constraint_rbis(df, options['rbis'], options['rbi_choice'])
+    df = constraint_events(df, options['event'])
     return df
   
 def constraint_players(df, player):
@@ -333,6 +377,7 @@ def constraint_pitchers(df, pitcher, hand):
             df = df[df['Pitcher_Hand'] == hand]
     else:
         df = df[df['Pitcher'] == pitcher]
+    
     return df
 
 def constraint_runners(df, first, second, third):
@@ -360,17 +405,37 @@ def constraint_runners(df, first, second, third):
     
     return df
 
-def constraint_rbis(df, query_options):
+def constraint_rbis(df, rbis, choice):
     print('Contraint rbis')
     # Needs to be customized
-    rbis = 0
-    df = df[df['RBI'] >= rbis]
+    if(rbis == -1):
+        print('This Hits')
+        pass
+    else:
+        if(choice == 'Less'):
+            df = df[df['RBI'] <= rbis]
+        elif(choice == 'Greater'):
+            df = df[df['RBI'] >= rbis]
+    
     return df
 
-def constraint_events(df, query_options):
+def constraint_events(df, event):
     print('Constraint Event')
-    events = [20]
-    df = df[df['Event_Type'].isin(events)]
+    if(event == 'ANY'):
+        pass
+    elif(event == 'Strikeout'):
+        df = df[df['Event_Type'] == 3]
+    elif(event == 'Walk'):
+        df = df[df['Event_Type'].isin([14,15,16])]
+    elif(event == 'Single'):
+        df = df[df['Event_Type'] == 20]
+    elif(event == 'Double'):
+        df = df[df['Event_Type'] == 21]
+    elif(event == 'Triple'):
+        df = df[df['Event_Type'] == 22]
+    elif(event == 'Homerun'):
+        df = df[df['Event_Type'] == 23]
+    
     return df
 
 class Hitter:
