@@ -47,7 +47,9 @@ def start_tkinter(df):
             'balls': balls.get(),
             'strikes': strikes.get(),
             'margin': margin.get(),
-            'choice': choice.get()
+            'choice': choice.get(),
+            'pitcher': pitcher.get(),
+            'hand': hand.get()
         }
         cleaned_df = get_search_criteria(df, query_options)
         print(cleaned_df)
@@ -154,6 +156,33 @@ def start_tkinter(df):
         return margin_clicked, choice_clicked
     margin, choice = create_margin_menu()
     
+    # Pitcher Portion
+    def create_pitcher_menu():
+        pitcher_options = df['Pitcher'].unique().tolist()
+        pitcher_options.sort()
+        pitcher_options.append('ALL')
+        hand_options = ['ANY', 'R', 'L']
+        
+        pitcher_options_clicked = tk.StringVar()
+        hand_options_clicked = tk.StringVar()
+        
+        pitcher_options_clicked.set(pitcher_options[-1])
+        hand_options_clicked.set(hand_options[0])
+        
+        pitcher_label = tk.Label(frame, text='Pitcher')
+        pitcher_label.place(relx=0.4, rely=0.6, relwidth=0.1)
+        hand_label = tk.Label(frame, text='Hand')
+        hand_label.place(relx=0.6, rely=0.6, relwidth=0.1)
+        
+        
+        
+        pitcher_drop = tk.OptionMenu(frame, pitcher_options_clicked, *pitcher_options)
+        pitcher_drop.place(relx=0.5, rely=0.6, relwidth=0.1)
+        hand_drop = tk.OptionMenu(frame, hand_options_clicked, *hand_options)
+        hand_drop.place(relx=0.7, rely=0.6, relwidth=0.1)
+       
+        return pitcher_options_clicked, hand_options_clicked
+    pitcher, hand = create_pitcher_menu()
     # Submit Button to create Dataframe Analysis
     submit_button = tk.Button(frame, text='Analyze', command=analyze)
     submit_button.place(relx=0.5, rely=0.9)
@@ -203,7 +232,7 @@ def get_search_criteria(df, options):
     df = constraint_innings(df, options['start_inning'], options['end_inning'])
     df = constraint_count(df, options['balls'], options['strikes'])
     df = constraint_score(df, options['margin'], options['choice'])
-    # df = constraint_pitchers(df, query_options)
+    df = constraint_pitchers(df, options['pitcher'], options['hand'])
     # df = constraint_runners(df, query_options)
     # df = constraint_rbis(df, query_options)
     # df = constraint_events(df, query_options)
@@ -260,12 +289,17 @@ def constraint_score(df, margin, choice):
             df = df[abs(df['Vis_Score'] - df['Home_Score']) >= margin]
     return df
 
-def constraint_pitchers(df, query_options):
+def constraint_pitchers(df, pitcher, hand):
     print('Pitcher constraint')
     # Need to customize
-    pitcher_hand = 'L'
-    pitcher = ''
-    df = df[df['Pitcher_Hand'] == pitcher_hand]
+    if(pitcher == 'ANY'):
+        if(hand == 'ANY'):
+            pass
+        else:
+            df = df[df['Pitcher_Hand'] == hand]
+    else:
+        df = df[df['Pitcher'] == pitcher]
+    
     return df
 
 def constraint_runners(df, query_options):
