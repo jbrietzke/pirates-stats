@@ -60,13 +60,20 @@ def start_tkinter(df):
             'event': event.get()
         }
         stats_df = get_search_criteria(df, query_options)
-        hitting_profile = get_stats(stats_df)
+        stats = get_stats(stats_df).get_stats()
         newWindow = tk.Toplevel(window)
         newWindow.title = f'{player.get()} Analysis'
         newWindow.geometry('400x300')
         profile_frame = tk.Frame(newWindow, bg=PIRATE_BLACK)
         profile_frame.place(relheight=1, relwidth=1)
-        tk.Label(profile_frame, text=hitting_profile.get_stats()).pack()
+        counter = 0
+        print(len(stats.items()))
+        for key, value in stats.items():
+            print(key, value)
+            tk.Label(profile_frame, text=f'{key}: ', anchor='w').place(relx=0.0, rely=(counter*1/13), relwidth=0.2)
+            tk.Label(profile_frame, text=f'{value}', anchor='w').place(relx=0.2, rely=(counter*1/13), relwidth=0.2)
+            counter += 1
+            
         
     
     canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH, bg=PIRATE_GOLD)
