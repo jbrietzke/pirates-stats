@@ -10,13 +10,13 @@ import tkinter as tk
 
 def main():
     print('Beginning Program')
-    pirates_csv = './bevent.csv'
+    pirates_csv = './play_by_plays/all_years.csv'
     # pirates_hitter = './pirates_hitters.csv'
     # Read in Data to DF
     df = pd.read_csv(pirates_csv)
     # print(df)
     # Dropping Vis team hitting stats
-    df = df[df.Batting == 1]
+    # df = df[df.Batting == 1]
     # df1 = df.Vis_Score - df.Home_Score > 0
     # df2 = df[df['Vis_Score'] - df['Home_Score'] > 0]
     # print(df2)
@@ -481,7 +481,7 @@ class Hitter:
                      , 3)
     
     def get_ops(self):
-        return self.get_obp() + self.get_slg()
+        return round(self.get_obp() + self.get_slg(), 3)
     
     def get_stats(self):
         return {
