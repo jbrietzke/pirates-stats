@@ -40,10 +40,14 @@ def start_tkinter(df):
     def analyze():
         print('Analyzing')
         query_options = {
-            'vis_teams': vis_team_options_clicked.get(),
-            'player': player_options_clicked.get(),
-            'start_inning': start_innings_clicked.get(),
-            'end_inning': end_innings_clicked.get()
+            'vis_teams': vis_team.get(),
+            'player': player.get(),
+            'start_inning': start.get(),
+            'end_inning': end.get(),
+            'balls': balls.get(),
+            'strikes': strikes.get(),
+            'margin': margin.get(),
+            'choice': choice.get()
         }
         cleaned_df = get_search_criteria(df, query_options)
         print(cleaned_df)
@@ -57,50 +61,98 @@ def start_tkinter(df):
     
    
     # Team Options Portion
-    team_options = df['Vis_Team'].unique().tolist()
-    team_options.sort()
-    team_options.append('ALL')
-    vis_team_options_clicked = tk.StringVar()
-    vis_team_options_clicked.set(team_options[-1])
-    team_label = tk.Label(frame, text='Vis Team')
-    team_label.place(relx=0.4, rely=0.1, relwidth=0.1)
-    team_drop = tk.OptionMenu(frame, vis_team_options_clicked, *team_options)
-    team_drop.place(relx=0.5, rely=0.1, relwidth=0.1)
-    
+    def create_team_menu():
+        team_options = df['Vis_Team'].unique().tolist()
+        team_options.sort()
+        team_options.append('ALL')
+        vis_team_options_clicked = tk.StringVar()
+        vis_team_options_clicked.set(team_options[-1])
+        team_label = tk.Label(frame, text='Vis Team')
+        team_label.place(relx=0.4, rely=0.1, relwidth=0.1)
+        team_drop = tk.OptionMenu(frame, vis_team_options_clicked, *team_options)
+        team_drop.place(relx=0.5, rely=0.1, relwidth=0.1)
+        return vis_team_options_clicked
+    vis_team = create_team_menu()
     # Player Names Portion
-    player_options = df['Batter'].unique().tolist()
-    player_options.sort()
-    player_options.append('ALL')
-    player_options_clicked = tk.StringVar()
-    player_options_clicked.set(player_options[-1])
-    team_label = tk.Label(frame, text='Player')
-    team_label.place(relx=0.4, rely=0.2, relwidth=0.1)
-    player_drop = tk.OptionMenu(frame, player_options_clicked, *player_options)
-    player_drop.place(relx=0.5, rely=0.2, relwidth=0.1)
-    
+    def create_player_menu():
+        player_options = df['Batter'].unique().tolist()
+        player_options.sort()
+        player_options.append('ALL')
+        player_options_clicked = tk.StringVar()
+        player_options_clicked.set(player_options[-1])
+        team_label = tk.Label(frame, text='Player')
+        team_label.place(relx=0.4, rely=0.2, relwidth=0.1)
+        player_drop = tk.OptionMenu(frame, player_options_clicked, *player_options)
+        player_drop.place(relx=0.5, rely=0.2, relwidth=0.1)
+        return player_options_clicked
+    player = create_player_menu()
     
     # Innings Portion
-    max_innings = df['Inning'].max()
-    innings_options = list(range(1,max_innings+1))
+    def create_inning_menu():
+        max_innings = df['Inning'].max()
+        innings_options = list(range(1,max_innings+1))
+        
+        start_innings_clicked = tk.IntVar()
+        end_innings_clicked = tk.IntVar()
+        start_innings_clicked.set(innings_options[0])
+        end_innings_clicked.set(innings_options[-1])
+        
+        start_inning_label = tk.Label(frame, text='Start Inning')
+        start_inning_label.place(relx=0.4, rely=0.3, relwidth=0.1)
+        start_inning_drop = tk.OptionMenu(frame, start_innings_clicked, *innings_options)
+        start_inning_drop.place(relx=0.5, rely=0.3, relwidth=0.1)
+        
+        end_inning_label = tk.Label(frame, text='end Inning')
+        end_inning_label.place(relx=0.6, rely=0.3, relwidth=0.1)
+        end_inning_drop = tk.OptionMenu(frame, end_innings_clicked, *innings_options)
+        end_inning_drop.place(relx=0.7, rely=0.3, relwidth=0.1)
+        
+        return start_innings_clicked, end_innings_clicked
+    start, end = create_inning_menu()
     
-    start_innings_clicked = tk.IntVar()
-    end_innings_clicked = tk.IntVar()
-    start_innings_clicked.set(innings_options[0])
-    end_innings_clicked.set(innings_options[-1])
+    # Count Portion
+    def create_count_menu():
+        ball_options = [-1] + list(range(0,4))
+        strike_options = [-1] + list(range(0,3))
+        balls_clicked = tk.IntVar()
+        strikes_clicked = tk.IntVar()
+        balls_clicked.set(ball_options[0])
+        strikes_clicked.set(strike_options[0])
     
-    start_inning_label = tk.Label(frame, text='Start Inning')
-    start_inning_label.place(relx=0.4, rely=0.3, relwidth=0.1)
-    start_inning_drop = tk.OptionMenu(frame, start_innings_clicked, *innings_options)
-    start_inning_drop.place(relx=0.5, rely=0.3, relwidth=0.1)
+        balls_label = tk.Label(frame, text='Balls')
+        balls_label.place(relx=0.4, rely=0.4, relwidth=0.1)
+        balls_drop = tk.OptionMenu(frame, balls_clicked, *ball_options)
+        balls_drop.place(relx=0.5, rely=0.4, relwidth=0.1)
+        
+        strikes_label = tk.Label(frame, text='strikes')
+        strikes_label.place(relx=0.6, rely=0.4, relwidth=0.1)
+        strikes_drop = tk.OptionMenu(frame, strikes_clicked, *strike_options)
+        strikes_drop.place(relx=0.7, rely=0.4, relwidth=0.1)
+        
+        return balls_clicked, strikes_clicked
+    balls, strikes = create_count_menu()
     
-    end_inning_label = tk.Label(frame, text='end Inning')
-    end_inning_label.place(relx=0.6, rely=0.3, relwidth=0.1)
-    end_inning_drop = tk.OptionMenu(frame, end_innings_clicked, *innings_options)
-    end_inning_drop.place(relx=0.7, rely=0.3, relwidth=0.1)
-
+    # Score Portion
+    def create_margin_menu():
+        margin_options = list(range(-1, 6))
+        choice_options = ['ANY', 'Less', 'Greater']
+        margin_clicked = tk.IntVar()
+        choice_clicked = tk.StringVar()
+        margin_clicked.set(margin_options[0])
+        choice_clicked.set(choice_options[0])
     
-
-
+        margin_label = tk.Label(frame, text='Margin')
+        margin_label.place(relx=0.4, rely=0.5, relwidth=0.1)
+        margin_drop = tk.OptionMenu(frame, margin_clicked, *margin_options)
+        margin_drop.place(relx=0.5, rely=0.5, relwidth=0.1)
+        
+        choice_label = tk.Label(frame, text='Choice')
+        choice_label.place(relx=0.6, rely=0.5, relwidth=0.1)
+        choice_drop = tk.OptionMenu(frame, choice_clicked, *choice_options)
+        choice_drop.place(relx=0.7, rely=0.5, relwidth=0.1)
+        
+        return margin_clicked, choice_clicked
+    margin, choice = create_margin_menu()
     
     # Submit Button to create Dataframe Analysis
     submit_button = tk.Button(frame, text='Analyze', command=analyze)
@@ -149,8 +201,8 @@ def get_search_criteria(df, options):
     df = constraint_players(df, options['player'])
     df = constraint_team(df, options['vis_teams'])
     df = constraint_innings(df, options['start_inning'], options['end_inning'])
-    # df = constraint_count(df, query_options)
-    # df = constraint_score(df, query_options)
+    df = constraint_count(df, options['balls'], options['strikes'])
+    df = constraint_score(df, options['margin'], options['choice'])
     # df = constraint_pitchers(df, query_options)
     # df = constraint_runners(df, query_options)
     # df = constraint_rbis(df, query_options)
@@ -181,21 +233,31 @@ def constraint_innings(df, start, end):
     df = df[(df['Inning'] >= start) & (df['Inning'] <= end)]
     return df
 
-def constraint_count(df, query_options):
+def constraint_count(df, balls, strikes):
+    # Think of a better system than negative one
     print('Getting count')
-    balls = 0
-    strikes = 0
-    df = df[df['Balls'] == balls]
-    df = df[df['Strikes'] == strikes]
+    if(balls == -1):
+        pass
+    else:
+        df = df[df['Balls'] == balls]
+    if(strikes == -1):
+        pass
+    else:
+        df = df[df['Strikes'] == strikes]
     return df
     
-def constraint_score(df, query_options):
+def constraint_score(df, margin, choice):
     print('Score Constraint')
     # Needs to be customized
-    vis_score = 0
-    home_score = 0
-    df = df[df['Vis_Score'] >= vis_score]
-    df = df[df['Home_Score'] >= home_score]
+    if(margin == -1):
+        pass
+    else:
+        if(choice == 'ANY'):
+            pass
+        elif(choice == 'Less'):
+            df = df[abs(df['Vis_Score'] - df['Home_Score']) <= margin]
+        elif(choice == 'Greater'):
+            df = df[abs(df['Vis_Score'] - df['Home_Score']) >= margin]
     return df
 
 def constraint_pitchers(df, query_options):
