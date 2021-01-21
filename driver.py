@@ -8,6 +8,7 @@ This is a temporary script file.
 import pandas as pd
 import numpy as np
 import tkinter as tk
+from PIL import ImageTk, Image
 QUERIES = []
 
 def main():
@@ -29,8 +30,18 @@ def start_tkinter(df):
     PIRATE_BLACK = '#27251F'
     window = tk.Tk()
     window.title("Pirates Hitting Analysis App")
-    MAX_ROWS = 15
-    
+
+    def add_logo():
+        print('Adding Logo')
+        path = 'pirates.jpg'
+        image1 = Image.open(path)
+        image1 = image1.resize((250, 200))
+        test = ImageTk.PhotoImage(image1)
+        label1 = tk.Label(image=test)
+        label1.image = test
+        label1.place(relx=0.7, rely=0.1, relheight=0.26, relwidth=0.2)
+
+
     def reset():
         print('Resetting')
         global QUERIES
@@ -164,14 +175,14 @@ def start_tkinter(df):
         strikes_clicked.set(strike_options[0])
     
         balls_label = tk.Label(frame, text='Balls', bg=PIRATE_GOLD)
-        balls_label.place(relx=0.1, rely=0.25, relwidth=0.1)
+        balls_label.place(relx=0.1, rely=0.2, relwidth=0.1)
         balls_drop = tk.OptionMenu(frame, balls_clicked, *ball_options)
-        balls_drop.place(relx=0.2, rely=0.25, relwidth=0.1)
+        balls_drop.place(relx=0.2, rely=0.2, relwidth=0.1)
         
         strikes_label = tk.Label(frame, text='Strikes', bg=PIRATE_GOLD)
-        strikes_label.place(relx=0.3, rely=0.25, relwidth=0.1)
+        strikes_label.place(relx=0.3, rely=0.20, relwidth=0.1)
         strikes_drop = tk.OptionMenu(frame, strikes_clicked, *strike_options)
-        strikes_drop.place(relx=0.4, rely=0.25, relwidth=0.1)
+        strikes_drop.place(relx=0.4, rely=0.20, relwidth=0.1)
         
         return balls_clicked, strikes_clicked
     balls, strikes = create_count_menu()
@@ -186,14 +197,14 @@ def start_tkinter(df):
         choice_clicked.set(choice_options[0])
     
         margin_label = tk.Label(frame, text='Margin', bg=PIRATE_GOLD)
-        margin_label.place(relx=0.1, rely=0.35, relwidth=0.1)
+        margin_label.place(relx=0.1, rely=0.25, relwidth=0.1)
         margin_drop = tk.OptionMenu(frame, margin_clicked, *margin_options)
-        margin_drop.place(relx=0.2, rely=0.35, relwidth=0.1)
+        margin_drop.place(relx=0.2, rely=0.25, relwidth=0.1)
         
         choice_label = tk.Label(frame, text='Choice', bg=PIRATE_GOLD)
-        choice_label.place(relx=0.3, rely=0.35, relwidth=0.1)
+        choice_label.place(relx=0.3, rely=0.25, relwidth=0.1)
         choice_drop = tk.OptionMenu(frame, choice_clicked, *choice_options)
-        choice_drop.place(relx=0.4, rely=0.35, relwidth=0.1)
+        choice_drop.place(relx=0.4, rely=0.25, relwidth=0.1)
         
         return margin_clicked, choice_clicked
     margin, choice = create_margin_menu()
@@ -212,16 +223,16 @@ def start_tkinter(df):
         hand_options_clicked.set(hand_options[0])
         
         pitcher_label = tk.Label(frame, text='Pitcher', bg=PIRATE_GOLD)
-        pitcher_label.place(relx=0.1, rely=0.4, relwidth=0.1)
+        pitcher_label.place(relx=0.1, rely=0.3, relwidth=0.1)
         hand_label = tk.Label(frame, text='Hand', bg=PIRATE_GOLD)
-        hand_label.place(relx=0.3, rely=0.4, relwidth=0.1)
+        hand_label.place(relx=0.3, rely=0.3, relwidth=0.1)
         
         
         
         pitcher_drop = tk.OptionMenu(frame, pitcher_options_clicked, *pitcher_options)
-        pitcher_drop.place(relx=0.2, rely=0.4, relwidth=0.1)
+        pitcher_drop.place(relx=0.2, rely=0.3, relwidth=0.1)
         hand_drop = tk.OptionMenu(frame, hand_options_clicked, *hand_options)
-        hand_drop.place(relx=0.4, rely=0.4, relwidth=0.1)
+        hand_drop.place(relx=0.4, rely=0.3, relwidth=0.1)
        
         return pitcher_options_clicked, hand_options_clicked
     pitcher, hand = create_pitcher_menu()
@@ -239,19 +250,19 @@ def start_tkinter(df):
         third_runner_clicked.set(runner_options[0])
         
         first_runner_label = tk.Label(frame, text='Runner 1st', bg=PIRATE_GOLD)
-        first_runner_label.place(relx=0.1, rely=0.45, relwidth=0.1)
+        first_runner_label.place(relx=0.1, rely=0.35, relwidth=0.1)
         second_runner_label = tk.Label(frame, text='Runner 2nd', bg=PIRATE_GOLD)
-        second_runner_label.place(relx=0.3, rely=0.45, relwidth=0.1)
+        second_runner_label.place(relx=0.3, rely=0.35, relwidth=0.1)
         third_runner_label = tk.Label(frame, text='Runner 3rd', bg=PIRATE_GOLD)
-        third_runner_label.place(relx=0.5, rely=0.45, relwidth=0.1)
+        third_runner_label.place(relx=0.5, rely=0.35, relwidth=0.1)
         
         
         first_drop = tk.OptionMenu(frame, first_runner_clicked, *runner_options)
-        first_drop.place(relx=0.2, rely=0.45, relwidth=0.1)
+        first_drop.place(relx=0.2, rely=0.35, relwidth=0.1)
         second_drop = tk.OptionMenu(frame, second_runner_clicked, *runner_options)
-        second_drop.place(relx=0.4, rely=0.45, relwidth=0.1)
+        second_drop.place(relx=0.4, rely=0.35, relwidth=0.1)
         third_drop = tk.OptionMenu(frame, third_runner_clicked, *runner_options)
-        third_drop.place(relx=0.6, rely=0.45, relwidth=0.1)
+        third_drop.place(relx=0.6, rely=0.35, relwidth=0.1)
        
         return first_runner_clicked, second_runner_clicked, third_runner_clicked
     first, second, third = create_runner_menu()
@@ -266,14 +277,14 @@ def start_tkinter(df):
         choice_clicked.set(choice_options[0])
     
         margin_label = tk.Label(frame, text='RBIs', bg=PIRATE_GOLD)
-        margin_label.place(relx=0.1, rely=0.5, relwidth=0.1)
+        margin_label.place(relx=0.1, rely=0.4, relwidth=0.1)
         margin_drop = tk.OptionMenu(frame, margin_clicked, *margin_options)
-        margin_drop.place(relx=0.2, rely=0.5, relwidth=0.1)
+        margin_drop.place(relx=0.2, rely=0.4, relwidth=0.1)
         
         choice_label = tk.Label(frame, text='Choice', bg=PIRATE_GOLD)
-        choice_label.place(relx=0.3, rely=0.5, relwidth=0.1)
+        choice_label.place(relx=0.3, rely=0.4, relwidth=0.1)
         choice_drop = tk.OptionMenu(frame, choice_clicked, *choice_options)
-        choice_drop.place(relx=0.4, rely=0.5, relwidth=0.1)
+        choice_drop.place(relx=0.4, rely=0.4, relwidth=0.1)
         
         return margin_clicked, choice_clicked
     rbis, rbi_choice = create_rbi_menu()
@@ -289,9 +300,9 @@ def start_tkinter(df):
         event_options_clicked = tk.StringVar()
         event_options_clicked.set(event_options[0])
         event_label = tk.Label(frame, text='Event', bg=PIRATE_GOLD)
-        event_label.place(relx=0.1, rely=0.55, relwidth=0.1)
+        event_label.place(relx=0.1, rely=0.45, relwidth=0.1)
         event_drop = tk.OptionMenu(frame, event_options_clicked, *event_options)
-        event_drop.place(relx=0.2, rely=0.55, relwidth=0.1)
+        event_drop.place(relx=0.2, rely=0.45, relwidth=0.1)
         return event_options_clicked
     event = create_event_menu()
     
@@ -311,19 +322,19 @@ def start_tkinter(df):
         year_clicked.set(year_options[0])
         
         month_label = tk.Label(frame, text='Month', bg=PIRATE_GOLD)
-        month_label.place(relx=0.1, rely=0.6, relwidth=0.1)
+        month_label.place(relx=0.1, rely=0.5, relwidth=0.1)
         day_label = tk.Label(frame, text='Day', bg=PIRATE_GOLD)
-        day_label.place(relx=0.3, rely=0.6, relwidth=0.1)
+        day_label.place(relx=0.3, rely=0.5, relwidth=0.1)
         year_label = tk.Label(frame, text='Year', bg=PIRATE_GOLD)
-        year_label.place(relx=0.5, rely=0.6, relwidth=0.1)
+        year_label.place(relx=0.5, rely=0.5, relwidth=0.1)
         
         
         first_drop = tk.OptionMenu(frame, month_clicked, *month_options)
-        first_drop.place(relx=0.2, rely=0.6, relwidth=0.1)
+        first_drop.place(relx=0.2, rely=0.5, relwidth=0.1)
         second_drop = tk.OptionMenu(frame, day_clicked, *day_options)
-        second_drop.place(relx=0.4, rely=0.6, relwidth=0.1)
+        second_drop.place(relx=0.4, rely=0.5, relwidth=0.1)
         third_drop = tk.OptionMenu(frame, year_clicked, *year_options)
-        third_drop.place(relx=0.6, rely=0.6, relwidth=0.1)
+        third_drop.place(relx=0.6, rely=0.5, relwidth=0.1)
        
         return month_clicked, day_clicked, year_clicked
     s_month, s_day, s_year = create_start_date_menu()
@@ -343,22 +354,23 @@ def start_tkinter(df):
         year_clicked.set(year_options[-1])
         
         month_label = tk.Label(frame, text='Month', bg=PIRATE_GOLD)
-        month_label.place(relx=0.1, rely=0.65, relwidth=0.1)
+        month_label.place(relx=0.1, rely=0.55, relwidth=0.1)
         day_label = tk.Label(frame, text='Day', bg=PIRATE_GOLD)
-        day_label.place(relx=0.3, rely=0.65, relwidth=0.1)
+        day_label.place(relx=0.3, rely=0.55, relwidth=0.1)
         year_label = tk.Label(frame, text='Year', bg=PIRATE_GOLD)
-        year_label.place(relx=0.5, rely=0.65, relwidth=0.1)
+        year_label.place(relx=0.5, rely=0.55, relwidth=0.1)
         
         
         first_drop = tk.OptionMenu(frame, month_clicked, *month_options)
-        first_drop.place(relx=0.2, rely=0.65, relwidth=0.1)
+        first_drop.place(relx=0.2, rely=0.55, relwidth=0.1)
         second_drop = tk.OptionMenu(frame, day_clicked, *day_options)
-        second_drop.place(relx=0.4, rely=0.65, relwidth=0.1)
+        second_drop.place(relx=0.4, rely=0.55, relwidth=0.1)
         third_drop = tk.OptionMenu(frame, year_clicked, *year_options)
-        third_drop.place(relx=0.6, rely=0.65, relwidth=0.1)
+        third_drop.place(relx=0.6, rely=0.55, relwidth=0.1)
        
         return month_clicked, day_clicked, year_clicked
     e_month, e_day, e_year = create_end_date_menu()
+    
     
     # Submit Button to create Dataframe Analysis
     submit_button = tk.Button(frame, text='Analyze', command=analyze)
@@ -367,8 +379,18 @@ def start_tkinter(df):
     # Reset button
     reset_button = tk.Button(frame, text='Reset', command=reset)
     reset_button.place(relx=0.3, rely=0, relwidth=0.1)
-
+    add_logo()
     
+    # Notes on the Operatiosn
+    note = '''
+    This program is meant to aid exploratory analysis of MLB player data.
+    It has play-by-play data from 2016-2019.
+    '-1' in the search menus evaluates to any/all values.
+    Players are identified by first four letters of last name followed by first name initial
+    and three numeric values (Adam Frazier == fraza001).
+    '''
+    note_label = tk.Label(frame, text=note, bg=PIRATE_GOLD, anchor='w', bd=0)
+    note_label.place(relx=0.0, rely=0.8, relwidth=1)
     window.mainloop() 
     
     
@@ -416,7 +438,7 @@ def get_search_criteria(df, options):
     df = constraint_rbis(df, options['rbis'], options['rbi_choice'])
     df = constraint_events(df, options['event'])
     df = constraint_dates(df, options['s_month'], options['s_day'], options['s_year'],
-                          options['e_month'], options['e_day'], options['s_year'])
+                          options['e_month'], options['e_day'], options['e_year'])
     return df
 
 def constraint_dates(df, s_month, s_day, s_year,
