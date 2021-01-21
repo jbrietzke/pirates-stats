@@ -8,6 +8,7 @@ This is a temporary script file.
 import pandas as pd
 import numpy as np
 import tkinter as tk
+QUERIES = []
 
 def main():
     print('Beginning Program')
@@ -28,8 +29,13 @@ def start_tkinter(df):
     PIRATE_BLACK = '#27251F'
     window = tk.Tk()
     window.title("Pirates Hitting Analysis App")
-    QUERIES = []
     MAX_ROWS = 15
+    
+    def reset():
+        print('Resetting')
+        global QUERIES
+        QUERIES = []
+    
     def analyze():
         print('Analyzing')
         query_options = {
@@ -353,9 +359,14 @@ def start_tkinter(df):
        
         return month_clicked, day_clicked, year_clicked
     e_month, e_day, e_year = create_end_date_menu()
+    
     # Submit Button to create Dataframe Analysis
-    submit_button = tk.Button(frame, text='Analyze', command=analyze, bg='blue')
-    submit_button.place(relx=0.2, rely=0)
+    submit_button = tk.Button(frame, text='Analyze', command=analyze)
+    submit_button.place(relx=0.2, rely=0, relwidth=0.1)
+    
+    # Reset button
+    reset_button = tk.Button(frame, text='Reset', command=reset)
+    reset_button.place(relx=0.3, rely=0, relwidth=0.1)
 
     
     window.mainloop() 
