@@ -6,6 +6,7 @@ This is a temporary script file.
 """
 
 import pandas as pd
+import numpy as np
 import tkinter as tk
 
 def main():
@@ -14,24 +15,7 @@ def main():
     # pirates_hitter = './pirates_hitters.csv'
     # Read in Data to DF
     df = pd.read_csv(pirates_csv)
-    # df['Year'] = pd.to_numeric(df['Date'].str[3:7], errors='coerce', downcast='integer')
-    # df['Month'] = pd.to_numeric(df['Date'].str[7:9], errors='coerce', downcast='integer')
-    # df['Day'] = pd.to_numeric(df['Date'].str[9:11], errors='coerce', downcast='integer')
-    # df.to_csv('master.csv')
-    # return
-    # print(df['Year'])
-    # print(df)
-    # Dropping Vis team hitting stats
-    # df = df[df.Batting == 1]
-    # df1 = df.Vis_Score - df.Home_Score > 0
-    # df2 = df[df['Vis_Score'] - df['Home_Score'] > 0]
-    # print(df2)
-    # # print(df)
-    # df.to_csv(pirates_hitter)
-    # df = df[df.Event_Type == 23]
-    # df = df[df.Batter == "bellj005"]
-    # get_search_criteria(df)
-    # print('PIT Stats', df)
+    # df.to_csv('master2.csv')
     start_tkinter(df)
   
 
@@ -39,7 +23,7 @@ def main():
 def start_tkinter(df):
     print('Starting Tkinter GUI')
     HEIGHT = 700
-    WIDTH = 800
+    WIDTH = 900
     PIRATE_GOLD = "#FDB827"
     PIRATE_BLACK = '#27251F'
     window = tk.Tk()
@@ -49,7 +33,8 @@ def start_tkinter(df):
     def analyze():
         print('Analyzing')
         query_options = {
-            'vis_teams': vis_team.get(),
+            'pitcher_teams': pitcher_team.get(),
+            'hitter_teams': hitter_team.get(),
             'player': player.get(),
             'start_inning': start.get(),
             'end_inning': end.get(),
@@ -102,17 +87,29 @@ def start_tkinter(df):
    
     # Team Options Portion
     def create_team_menu():
-        team_options = df['Vis_Team'].unique().tolist()
-        team_options.sort()
-        team_options.append('ANY')
-        vis_team_options_clicked = tk.StringVar()
-        vis_team_options_clicked.set(team_options[-1])
-        team_label = tk.Label(frame, text='Vis Team', bg=PIRATE_GOLD)
-        team_label.place(relx=0.1, rely=0.05, relwidth=0.1)
-        team_drop = tk.OptionMenu(frame, vis_team_options_clicked, *team_options)
-        team_drop.place(relx=0.2, rely=0.05, relwidth=0.1)
-        return vis_team_options_clicked
-    vis_team = create_team_menu()
+        pitcher_team_options = df['Pitcher_Team'].unique().tolist()
+        pitcher_team_options.sort()
+        pitcher_team_options.append('ANY')
+        pitcher_team_options_clicked = tk.StringVar()
+        pitcher_team_options_clicked.set(pitcher_team_options[-1])
+        pitcher_team_label = tk.Label(frame, text='Pitcher Team', bg=PIRATE_GOLD)
+        pitcher_team_label.place(relx=0.1, rely=0.05, relwidth=0.1)
+        pitcher_team_drop = tk.OptionMenu(frame, pitcher_team_options_clicked, *pitcher_team_options)
+        pitcher_team_drop.place(relx=0.2, rely=0.05, relwidth=0.1)
+        
+        hitter_team_options = df['Hitter_Team'].unique().tolist()
+        hitter_team_options.sort()
+        hitter_team_options.append('ANY')
+        hitter_team_options_clicked = tk.StringVar()
+        hitter_team_options_clicked.set(hitter_team_options[-1])
+        hitter_team_label = tk.Label(frame, text='Hitter Team', bg=PIRATE_GOLD)
+        hitter_team_label.place(relx=0.3, rely=0.05, relwidth=0.1)
+        hitter_team_drop = tk.OptionMenu(frame, hitter_team_options_clicked, *hitter_team_options)
+        hitter_team_drop.place(relx=0.4, rely=0.05, relwidth=0.1)
+        
+            
+        return pitcher_team_options_clicked, hitter_team_options_clicked
+    pitcher_team, hitter_team = create_team_menu()
    
     # Player Names Portion
     def create_player_menu():
@@ -372,11 +369,9 @@ def get_stats(df):
     # df = get_search_criteria(df)
     hitter = Hitter()
     for i, j in df.iterrows():
-        if(j['Event_Text'][0] == 'SH'):
-            print('Sacrifice')
-            print(j['Event_Text'])
-       
-        if(j['Event_Type'] in [2,3,18,19,20,21,22,23]):
+        if(j['Sac_Fly'] == 'T' or j['Sac_Hit'] == 'T'):
+            pass
+        elif(j['Event_Type'] in [2,3,18,19,20,21,22,23]):
             hitter.add_at_bats(1)
         if(j['Event_Type'] in [2,19]):
             hitter.add_outs(1)
@@ -401,7 +396,7 @@ def get_stats(df):
 def get_search_criteria(df, options):
     print('Get search Criteria')
     df = constraint_players(df, options['player'])
-    df = constraint_team(df, options['vis_teams'])
+    df = constraint_team(df, options['pitcher_teams'], options['hitter_teams'])
     df = constraint_innings(df, options['start_inning'], options['end_inning'])
     df = constraint_count(df, options['balls'], options['strikes'])
     df = constraint_score(df, options['margin'], options['choice'])
@@ -430,13 +425,14 @@ def constraint_players(df, player):
         df = df[df.Batter == player]    
     return df
   
-def constraint_team(df, vis_teams):
+def constraint_team(df, pitcher, hitter):
     print('Get Team Search')
     # This needs to be customized
-    if(vis_teams == 'ANY'):
-        pass
-    else:
-        df = df[df['Vis_Team'].isin(vis_teams)]
+    if(pitcher != 'ANY'):
+        df = df[df['Pitcher_Team'] == pitcher]
+    if(hitter != 'ANY'):
+        df = df[df['Hitter_Team'] == hitter]
+   
     return df
     
 def constraint_innings(df, start, end):
