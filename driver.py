@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
-
-This is a temporary script file.
+This is the driver file for the Pirates Stats Query Tool
 """
 
 import pandas as pd
@@ -13,11 +12,8 @@ QUERIES = []
 
 def main():
     print('Beginning Program')
-    pirates_csv = './master.csv'
-    # pirates_hitter = './pirates_hitters.csv'
-    # Read in Data to DF
+    pirates_csv = './main.csv'
     df = pd.read_csv(pirates_csv)
-    # df.to_csv('master2.csv')
     start_tkinter(df)
   
 
