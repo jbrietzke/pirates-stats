@@ -14,10 +14,121 @@ PIRATE_BLACK = '#27251F'
 
 def main():
     print('Beginning Program')
-    pirates_csv = './main1.csv'
+    pirates_csv = './main.csv'
     df = pd.read_csv(pirates_csv)
     start_tkinter(df)
   
+
+def start_tkinter(df):
+    print('Starting Tkinter GUI')
+    HEIGHT = 700
+    WIDTH = 900
+    window = tk.Tk()
+    window.title("Pirates Hitting Analysis App")
+    
+    canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH, bg=PIRATE_GOLD)
+    canvas.pack()
+    
+    frame = tk.Frame(window, bg=PIRATE_BLACK, bd=5)
+    frame.place(relx=0.5, rely=0.5, relwidth=0.9, relheight=0.9, anchor='c')
+
+#   Creating Query Filters
+    pitcher_team, hitter_team = create_team_menu(df, frame)
+    player = create_player_menu(df, frame)
+    start, end = create_inning_menu(df, frame)
+    balls, strikes = create_count_menu(df, frame)
+    margin, choice = create_margin_menu(df, frame)
+    pitcher, hand = create_pitcher_menu(df, frame)
+    first, second, third = create_runner_menu(df, frame)
+    rbis, rbi_choice = create_rbi_menu(df, frame)
+    event = create_event_menu(df, frame)
+    s_month, s_day, s_year = create_start_date_menu(df, frame)
+    e_month, e_day, e_year = create_end_date_menu(df, frame)
+    
+    query_options = {
+        'pitcher_teams': pitcher_team,
+        'hitter_teams': hitter_team,
+        'player': player,
+        'start_inning': start,
+        'end_inning': end,
+        'balls': balls,
+        'strikes': strikes,
+        'margin': margin,
+        'choice': choice,
+        'pitcher': pitcher,
+        'hand': hand,
+        'first': first,
+        'second': second,
+        'third': third,
+        'rbis': rbis,
+        'rbi_choice': rbi_choice,
+        'event': event,
+        's_month': s_month,
+        's_day': s_day,
+        's_year': s_year,
+        'e_month': e_month,
+        'e_day': e_day,
+        'e_year': e_year
+    }
+    
+    # Submit Button to create Dataframe Analysis
+    submit_button = tk.Button(frame,
+                              text='Analyze',
+                              command= lambda: analyze(df, query_options, window))
+    submit_button.place(relx=0.2, rely=0, relwidth=0.1)
+    
+    # Reset button
+    reset_button = tk.Button(frame, text='Reset', command=reset)
+    reset_button.place(relx=0.3, rely=0, relwidth=0.1)
+    add_logo()
+    
+    add_note(frame)
+    
+    # Keeps application running
+    window.mainloop() 
+    
+# Creating separate window to show stats
+def analyze(df, query_options, window):
+    print('Analyzing')
+    # Setting the value selected
+    for key, item in query_options.items():
+        query_options[key] = item.get()
+    stats_df = get_search_criteria(df, query_options)
+    # Updating Global queries
+    QUERIES.append(get_stats(stats_df).get_stats())
+    # Creating new window
+    newWindow = tk.Toplevel(window)
+    newWindow.geometry('400x300')
+    profile_frame = tk.Frame(newWindow, bg=PIRATE_BLACK)
+    profile_frame.place(relheight=1, relwidth=1)
+    # Displaying the stats in the newly created window
+    q_counter = 0
+    num_stats = len(QUERIES[0].items()) + 1
+    num_queries = len(QUERIES) + 1
+    for stats in QUERIES:
+        s_counter = 0
+        for key, value in stats.items():
+            if(q_counter == 0):
+                tk.Label(profile_frame, text=f'{key}: ', anchor='w').place(relx=(0.0), rely=(s_counter/num_stats), relwidth=0.2)
+            tk.Label(profile_frame, text=f'{value}', anchor='w').place(relx=(0.2 + (q_counter*0.7/num_queries)), rely=(s_counter/num_stats), relwidth=0.7/num_queries)
+            s_counter += 1
+        q_counter += 1
+
+# Adding note at bottom of Tkinter App
+def add_note(frame):
+    # Notes on the Operatiosn
+    note = '''
+    This program is meant to aid exploratory analysis of MLB player data.
+    It has play-by-play data from 2016-2019.
+    '-1' in the search menus evaluates to any/all values.
+    Players are identified by first four letters of last name followed by first name initial
+    and three numeric values (Adam Frazier == fraza001).
+    '''
+    note_label = tk.Label(frame, text=note, bg=PIRATE_GOLD, anchor='w', bd=0)
+    note_label.place(relx=0.0, rely=0.8, relwidth=1)
+
+
+
 # Adding Pirates Logo
 def add_logo():
         print('Adding Logo')
@@ -289,101 +400,6 @@ def create_end_date_menu(df, frame):
    
     return month_clicked, day_clicked, year_clicked
 
-def start_tkinter(df):
-    print('Starting Tkinter GUI')
-    HEIGHT = 700
-    WIDTH = 900
-    window = tk.Tk()
-    window.title("Pirates Hitting Analysis App")
-
-    def analyze():
-        print('Analyzing')
-        query_options = {
-            'pitcher_teams': pitcher_team.get(),
-            'hitter_teams': hitter_team.get(),
-            'player': player.get(),
-            'start_inning': start.get(),
-            'end_inning': end.get(),
-            'balls': balls.get(),
-            'strikes': strikes.get(),
-            'margin': margin.get(),
-            'choice': choice.get(),
-            'pitcher': pitcher.get(),
-            'hand': hand.get(),
-            'first': first.get(),
-            'second': second.get(),
-            'third': third.get(),
-            'rbis': rbis.get(),
-            'rbi_choice': rbi_choice.get(),
-            'event': event.get(),
-            's_month': s_month.get(),
-            's_day': s_day.get(),
-            's_year': s_year.get(),
-            'e_month': e_month.get(),
-            'e_day': e_day.get(),
-            'e_year': e_year.get()
-        }
-        stats_df = get_search_criteria(df, query_options)
-        QUERIES.append(get_stats(stats_df).get_stats())
-        newWindow = tk.Toplevel(window)
-        newWindow.title = f'{player.get()} Analysis'
-        newWindow.geometry('400x300')
-        profile_frame = tk.Frame(newWindow, bg=PIRATE_BLACK)
-        profile_frame.place(relheight=1, relwidth=1)
-        q_counter = 0
-        num_stats = len(QUERIES[0].items()) + 1
-        num_queries = len(QUERIES) + 1
-        for stats in QUERIES:
-            s_counter = 0
-            for key, value in stats.items():
-                if(q_counter == 0):
-                    tk.Label(profile_frame, text=f'{key}: ', anchor='w').place(relx=(0.0), rely=(s_counter/num_stats), relwidth=0.2)
-                tk.Label(profile_frame, text=f'{value}', anchor='w').place(relx=(0.2 + (q_counter*0.7/num_queries)), rely=(s_counter/num_stats), relwidth=0.7/num_queries)
-                s_counter += 1
-            q_counter += 1
-            
-        
-    
-    canvas = tk.Canvas(window, height=HEIGHT, width=WIDTH, bg=PIRATE_GOLD)
-    canvas.pack()
-    
-    frame = tk.Frame(window, bg=PIRATE_BLACK, bd=5)
-    frame.place(relx=0.5, rely=0.5, relwidth=0.9, relheight=0.9, anchor='c')
-
-    pitcher_team, hitter_team = create_team_menu(df, frame)
-    player = create_player_menu(df, frame)
-    start, end = create_inning_menu(df, frame)
-    balls, strikes = create_count_menu(df, frame)
-    margin, choice = create_margin_menu(df, frame)
-    pitcher, hand = create_pitcher_menu(df, frame)
-    first, second, third = create_runner_menu(df, frame)
-    rbis, rbi_choice = create_rbi_menu(df, frame)
-    event = create_event_menu(df, frame)
-    s_month, s_day, s_year = create_start_date_menu(df, frame)
-    e_month, e_day, e_year = create_end_date_menu(df, frame)
-    
-    
-    # Submit Button to create Dataframe Analysis
-    submit_button = tk.Button(frame, text='Analyze', command=analyze)
-    submit_button.place(relx=0.2, rely=0, relwidth=0.1)
-    
-    # Reset button
-    reset_button = tk.Button(frame, text='Reset', command=reset)
-    reset_button.place(relx=0.3, rely=0, relwidth=0.1)
-    add_logo()
-    
-    # Notes on the Operatiosn
-    note = '''
-    This program is meant to aid exploratory analysis of MLB player data.
-    It has play-by-play data from 2016-2019.
-    '-1' in the search menus evaluates to any/all values.
-    Players are identified by first four letters of last name followed by first name initial
-    and three numeric values (Adam Frazier == fraza001).
-    '''
-    note_label = tk.Label(frame, text=note, bg=PIRATE_GOLD, anchor='w', bd=0)
-    note_label.place(relx=0.0, rely=0.8, relwidth=1)
-    window.mainloop() 
-    
     
     
     
